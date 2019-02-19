@@ -22,22 +22,29 @@ func md5String(path string) (string, error) {
 	return fmt.Sprintf("%x", h.Sum(nil)), nil
 }
 
-func main() {
-	files, err := filepath.Glob("*")
+func writeSumRecursive(file *os.File, dir string) error {
+	files, err := filepath.Glob(fmt.Sprintf("%s/*", dir))
 	if err != nil {
-		panic(err)
+		return err
 	}
 	for _, v := range files {
 		if fileinfo, err := os.Stat(v); err != nil {
-			panic(err)
+			return err
 		} else if fileinfo.IsDir() {
 			//
 		} else {
 			if sum, err := md5String(v); err != nil {
-				panic(err)
+				return err
 			} else {
-				fmt.Printf("%s\t%s\n", v, sum)
+				file.Write([]byte(fmt.Sprintf("%s/%s\t%s\n", dir, v, sum)))
 			}
 		}
 	}
+
+	return nil
+}
+
+func main() {
+	writeSumRecursive(os.Stdout, "PATH\tCHECKSUM (md5)\n")
+	writeSumRecursive(os.Stdout, ".")
 }
