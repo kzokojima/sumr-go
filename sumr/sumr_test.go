@@ -60,7 +60,7 @@ func TestMd5StringR(t *testing.T) {
 	} else if actual, err := ioutil.ReadFile("actual.txt"); err != nil {
 		panic(err)
 	} else {
-		if ! bytes.Equal(expected, actual) {
+		if !bytes.Equal(expected, actual) {
 			t.Errorf("got: %v\nwant: %v", actual, expected)
 		}
 	}
