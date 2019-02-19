@@ -33,6 +33,8 @@ func TestMd5StringR(t *testing.T) {
 	} else {
 		file.Write([]byte("./1.txt\td41d8cd98f00b204e9800998ecf8427e\n"))
 		file.Write([]byte("./2.txt\tacbd18db4cc2f85cedef654fccc4a4d8\n"))
+		file.Write([]byte("./sub/1.txt\td41d8cd98f00b204e9800998ecf8427e\n"))
+		file.Write([]byte("./sub/2.txt\tacbd18db4cc2f85cedef654fccc4a4d8\n"))
 	}
 
 	// actual
@@ -42,9 +44,12 @@ func TestMd5StringR(t *testing.T) {
 	} else {
 		defer os.RemoveAll("tmp")
 		os.Mkdir("tmp", 0755)
+		os.Mkdir("tmp/sub", 0755)
 		os.Chdir("tmp")
 		ioutil.WriteFile("1.txt", []byte(""), 0644)
 		ioutil.WriteFile("2.txt", []byte("foo"), 0644)
+		ioutil.WriteFile("sub/1.txt", []byte(""), 0644)
+		ioutil.WriteFile("sub/2.txt", []byte("foo"), 0644)
 		writeSumRecursive(file, ".")
 		os.Chdir("..")
 	}

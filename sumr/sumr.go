@@ -31,12 +31,12 @@ func writeSumRecursive(file *os.File, dir string) error {
 		if fileinfo, err := os.Stat(v); err != nil {
 			return err
 		} else if fileinfo.IsDir() {
-			//
+			writeSumRecursive(file, fmt.Sprintf("%s/%s", dir, v))
 		} else {
 			if sum, err := md5String(v); err != nil {
 				return err
 			} else {
-				file.Write([]byte(fmt.Sprintf("%s/%s\t%s\n", dir, v, sum)))
+				file.Write([]byte(fmt.Sprintf("./%s\t%s\n", v, sum)))
 			}
 		}
 	}
