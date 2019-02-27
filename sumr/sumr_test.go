@@ -11,7 +11,7 @@ func checkMd5String(t *testing.T, path string, data string, expected string) {
 	if err := ioutil.WriteFile(path, []byte(data), 0644); err != nil {
 		panic(err)
 	}
-	if actual, err := md5String(path); err != nil {
+	if actual, err := hashString(path, "md5"); err != nil {
 		panic(err)
 	} else if actual != expected {
 		t.Errorf("got: %s\nwant: %s", actual, expected)
@@ -50,7 +50,7 @@ func TestMd5StringR(t *testing.T) {
 		ioutil.WriteFile("2.txt", []byte("foo"), 0644)
 		ioutil.WriteFile("sub/1.txt", []byte(""), 0644)
 		ioutil.WriteFile("sub/2.txt", []byte("foo"), 0644)
-		writeSumRecursive(file, ".")
+		writeSumRecursive(file, ".", "md5")
 		os.Chdir("..")
 	}
 
