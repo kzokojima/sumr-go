@@ -14,6 +14,8 @@ import (
 
 const usage = "usage: sumr [-a algo] [dir]"
 
+var ignore = []string{"desktop.ini", "Thumbs.db", ".DS_Store"}
+
 func exit(message string, code int) {
 	fmt.Println(message)
 	os.Exit(code)
@@ -58,12 +60,18 @@ func writeSumRecursive(file *os.File, dir string, algo string) error {
 	if err != nil {
 		return err
 	}
+OUTER:
 	for _, v := range files {
 		if fileinfo, err := os.Stat(v); err != nil {
 			return err
 		} else if fileinfo.IsDir() {
 			writeSumRecursive(file, fmt.Sprintf("%s/%s", dir, v), algo)
 		} else {
+			for _, each := range ignore {
+				if each == v {
+					continue OUTER
+				}
+			}
 			if sum, err := hashString(v, algo); err != nil {
 				return err
 			} else {
