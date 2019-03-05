@@ -41,6 +41,10 @@ $ make test
 
 ## Changes
 
+### v0.1.1 - 2019-03-06
+
+* fix
+
 ### v0.1.0 - 2019-03-05
 
 * Initial release
