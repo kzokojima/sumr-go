@@ -9,7 +9,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 const usage = "usage: sumr [-a algo] [dir]"
@@ -49,35 +48,26 @@ func hashString(path string, algo string) (string, error) {
 }
 
 func writeSumRecursive(file *os.File, dir string, algo string) error {
-	// escape
-	replacer := strings.NewReplacer(
-		"[", "\\[",
-		"]", "\\]",
-	)
-	dir = replacer.Replace(dir)
-
-	files, err := filepath.Glob(fmt.Sprintf("%s/*", dir))
-	if err != nil {
-		return err
-	}
-OUTER:
-	for _, v := range files {
-		if fileinfo, err := os.Stat(v); err != nil {
+	err := filepath.Walk(dir, func(path string, fileinfo os.FileInfo, err error) error {
+		if err != nil {
 			return err
-		} else if fileinfo.IsDir() {
-			writeSumRecursive(file, fmt.Sprintf("%s/%s", dir, v), algo)
-		} else {
+		}
+		if !fileinfo.IsDir() {
 			for _, each := range ignore {
-				if each == v {
-					continue OUTER
+				if each == fileinfo.Name() {
+					return nil
 				}
 			}
-			if sum, err := hashString(v, algo); err != nil {
+			if sum, err := hashString(path, algo); err != nil {
 				return err
 			} else {
-				file.Write([]byte(fmt.Sprintf("./%s\t%s\n", v, sum)))
+				file.Write([]byte(fmt.Sprintf("./%s\t%s\n", path, sum)))
 			}
 		}
+		return nil
+	})
+	if err != nil {
+		return err
 	}
 
 	return nil
