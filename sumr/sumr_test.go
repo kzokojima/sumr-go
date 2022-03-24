@@ -50,7 +50,7 @@ func TestMd5StringR(t *testing.T) {
 		ioutil.WriteFile("2.txt", []byte("foo"), 0644)
 		ioutil.WriteFile("sub/1.txt", []byte(""), 0644)
 		ioutil.WriteFile("sub/2.txt", []byte("foo"), 0644)
-		writeSumRecursive(file, ".", "md5")
+		writeSumRecursive(file, "md5")
 		os.Chdir("..")
 	}
 
