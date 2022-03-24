@@ -9,3 +9,6 @@ install:
 
 test:
 	@cd sumr && go test
+
+clean:
+	@rm sumr/sumr > /dev/null 2>&1 || true
